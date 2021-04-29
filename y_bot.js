@@ -1,95 +1,95 @@
 // ==UserScript==
-// @name         Bot for Yandex
+// @name         Bot for Google
 // @namespace    http://tampermonkey.net/
 // @version      0.1
 // @description  try to take over the world!
 // @author       You
-// @match        https://yandex.ru/*
-// @match        https://xn----7sbab5aqcbiddtdj1e1g.xn--p1ai/*
-// @match https://lapkins.ru/*
+// @match        https://www.google.com/*
+// @match        https://napli.ru/*
+// @match        https://www.afisha.ru/*
 // @icon
 // @grant        none
 // ==/UserScript==
+
 let sites={
-    "//xn----7sbab5aqcbiddtdj1e1g.xn--p1ai/":["гобой",
-                                              "как звучит саксофон",
-                                              "как звучит флейта"],
-    "lapkins.ru":["собаки",
-                  "породы собак список",
-                  "все породы собак"]
+    "napli.ru":["10 самых популярных шрифтов от Google",
+                "Отключение редакций и ревизий в WordPress",
+                "Вывод произвольных типов записей и полей в WordPress"],
+    "afisha.ru":["киноафиша",
+                 "что идет в кино",
+                 "кинотеатры москвы афиша"]
 };
 
 let site=Object.keys(sites)[getRandom(0,Object.keys(sites).length)];
 let keywords=sites[site];
-
-let button_search=document.getElementsByClassName("button_theme_search")[0];
+let btnK=document.getElementsByName('btnK')[0];
 let links=document.links;
 let keyword=keywords[getRandom(0,keywords.length)];
-let yandexInput=document.getElementsByName('text')[0];
+let googleInput=document.getElementsByName('q')[0];
 let i=0;
 
-if(button_search!==undefined){
+if(btnK!==undefined){
     document.cookie=`site=${site}`;
-}else if (location.hostname=="yandex.ru"){
+}else if (location.hostname=="www.google.com"){
     site=getCookie("site");
 }else{
     site=location.hostname;
 }
 
-if(button_search!==undefined){
+if(btnK!==undefined){
+    document.cookie=`site=${site}`;
     let timerId=setInterval(function(){
-        yandexInput.value+=keyword[i];
+        googleInput.value+=keyword[i];
         i++;
         if(i==keyword.length){
             clearInterval(timerId);
-            button_search.click();
+            btnK.click();
         }
     },1000);
 }else if(location.hostname==site){
     console.log("Мы на месте");
     setTimeout(()=>{
         let index=getRandom(0,links.length);
-        if(getRandom(0,101)>=60){
-            location.href="https://yandex.ru/";
+        if(getRandom(0,101)>=40){
+        location.href="https://yandex.ru";
         }
         if(links[index].href.indexOf(site)!=-1){
-            links[index].click()
+            links[index].click();
         }
     },getRandom(3500,7000));
 }
 else{
-    let nextYandexPage=true;
-    for(let i=0; i<links.length;i++){
-        if(links[i].href.indexOf(site)!==-1){
+    let nextGooglePage=true;
+    for (let i=0; i<links.length; i++){
+        if(links[i].href.indexOf(site)!=-1){
             let link=links[i];
-            nextYandexPage=false;
+            nextGooglePage=false;
             link.removeAttribute("target");
-            console.log("Нашёл ссылку "+link);
+            console.log("Нашёл фразу " + links[i]);
             setTimeout(()=>{
                 link.click();
-            },getRandom(1000,5000));
+            },getRandom(1000,4500));
             break;
         }
     }
-    if(document.querySelector(".pager__item_current_yes").textContent=="5"){
-        nextYandexPage=false;
-        location.href="https://yandex.ru/";
+    if(document.querySelector(".YyVfkd").innerText=="5"){
+        nextGooglePage=false;
+        location.href="https://www.google.com"
     }
 
-    if(document.querySelector(".pager__item_current_yes").textContent!=="5"){
+    if(document.querySelector(".YyVfkd").innerText!=="5"){
         setTimeout(()=>{
-            document.querySelector(".pager__item_kind_next").click();
+            pnnext.click();
         },getRandom(3000,5500));
     }
 }
-
 function getRandom(min,max){
     return Math.floor(Math.random()*(max-min)+min);
 }
 
 function getCookie(name) {
-    let matches = document.cookie.match(new RegExp(
-        "(?:^|; )" + name.replace(/([\.$?*|{}\(\)\[\]\\\/\+^])/g, '\\$1') + "=([^;]*)"
-    ));
-    return matches ? decodeURIComponent(matches[1]) : undefined;
+let matches = document.cookie.match(new RegExp(
+"(?:^|; )" + name.replace(/([\.$?*|{}\(\)\[\]\\\/\+^])/g, '\\$1') + "=([^;]*)"
+));
+return matches ? decodeURIComponent(matches[1]) : undefined;
 }
